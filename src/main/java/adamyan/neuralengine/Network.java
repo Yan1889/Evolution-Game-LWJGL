@@ -37,37 +37,36 @@ public class Network {
     }
 
     /**
-     * Creates and initializes a new neural network from a file
-     *
-     * @param layers      Array of layer configurations
-     * @param srcFileName Weights source file name
+     * Constructs a network with random weights
+     * @param layers the specified architecture
      */
-    public Network(Layer[] layers, String srcFileName) {
-        File file = new File(srcFileName);
-
+    public Network(Layer[] layers) {
         this.layers = layers;
         this.size = layers.length;
+        this.weights = getWeightsFromArchitecture(layers);
+        randomizeWeights();
+    }
 
-        this.weights = new double[size - 1][][];
-        for (int layer = 0; layer < size - 1; layer++) {
-            // Add +1 for bias weights
-            this.weights[layer] = new double
-                    [layers[layer].length() + 1]
-                    [layers[layer + 1].length()];
-        }
+    /**
+     * Creates and initializes a new neural network from a file
+     *
+     * @param layers Array of layer configurations
+     * @param srcFileName Weights source file name
+     * @throws RuntimeException when the file isn't found
+     */
+    public Network(Layer[] layers, String srcFileName) {
+        this.layers = layers;
+        this.size = layers.length;
+        this.weights = getWeightsFromArchitecture(layers);
 
-        if (!file.exists()) {
-            System.out.println("Weights file not found. Will randomize weights.");
-            randomizeWeights();
-            return;
-        }
+        File file = new File(srcFileName);
+        if (!file.exists()) throw new RuntimeException("Didn't find the file");
 
         try (DataInputStream dis = new DataInputStream(new FileInputStream(srcFileName))) {
             // Read network size and verify
             int savedSize = dis.readInt();
             if (savedSize != size) {
-                System.err.println("Saved network size doesn't match current network.");
-                System.exit(1);
+                throw new RuntimeException("Saved network size doesn't match current network.");
             }
 
             // Read each layer
@@ -78,8 +77,7 @@ public class Network {
                 // Verify dimensions
                 if (inputSize != layers[layer].length() + 1 ||
                         outputSize != layers[layer + 1].length()) {
-                    System.err.println("Saved layer dimensions don't match current network.");
-                    System.exit(1);
+                    throw new RuntimeException("Saved layer dimensions don't match current network.");
                 }
 
                 // Read weights
@@ -89,11 +87,21 @@ public class Network {
                     }
                 }
             }
-
         } catch (IOException e) {
-            System.err.println("Error loading weights: " + e.getMessage());
-            System.exit(2);
+            throw new RuntimeException("Error loading weights: " + e.getMessage());
         }
+    }
+
+    private double[][][] getWeightsFromArchitecture(Layer[] layers) {
+        double[][][] resultingWeights = new double[layers.length - 1][][];
+
+        for (int layer = 0; layer < layers.length - 1; layer++) {
+            // Add +1 for bias weights
+            resultingWeights[layer] = new double
+                    [layers[layer].length() + 1]
+                    [layers[layer + 1].length()];
+        }
+        return resultingWeights;
     }
 
     /**
@@ -165,10 +173,8 @@ public class Network {
             }
 
             System.out.println("Weights saved to " + tarFileName);
-            return;
         } catch (IOException e) {
-            System.err.println("Error saving weights: " + e.getMessage());
-            System.exit(3);
+            throw new RuntimeException("Error saving weights: " + e.getMessage());
         }
     }
 
