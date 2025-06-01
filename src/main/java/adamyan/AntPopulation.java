@@ -3,8 +3,6 @@ package adamyan;
 import adamyan.neuralengine.ActivationFunctions;
 import adamyan.neuralengine.Layer;
 import adamyan.neuralengine.Network;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ public class AntPopulation {
     private double elitePercentage;
     private Function<Ant, Double> fitnessFunction;
 
-
+    String sigmaFileName;
 
     public AntPopulation(Vector2D nestPos, int antCount, Function<Ant, Double> fitnessFunction, double elitePercentage) {
         this.nestPos = nestPos;
@@ -48,7 +46,7 @@ public class AntPopulation {
         for (int i = 0; i < antCount; i++) {
             ants.add(new Ant(
                     nestPos,
-                    new Network(layers)
+                    new Network(layers, sigmaFileName)
             ));
         }
     }
@@ -60,16 +58,6 @@ public class AntPopulation {
     }
     public void flood() {}
 
-    public void drawOnCanvas(Canvas canvas) {
-        var gc = canvas.getGraphicsContext2D();
-
-        // draw the population's nest as a circle
-        gc.setFill(Color.BLACK);
-        gc.fillOval(nestPos.x() - 25, nestPos.y() - 25, 50, 50);
-
-        // draw all the ants according to their rotation
-        for (Ant ant : ants) {
-            ant.drawOnCanvas(gc);
-        }
+    public void drawOnCanvas() {
     }
 }

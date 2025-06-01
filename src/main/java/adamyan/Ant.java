@@ -1,8 +1,6 @@
 package adamyan;
 
 import adamyan.neuralengine.Network;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
 /**
  * represents a single ant
@@ -12,7 +10,7 @@ public class Ant {
     private Vector2D position;
     private double rotationAngle;
 
-    public static final Image antImage = new Image("ant.png");
+    //public static final Image antImage = new Image("ant.png");
 
     public Ant(String FileName) {
 
@@ -36,12 +34,7 @@ public class Ant {
         position = position.plus(movementVector);
     }
 
-    public void drawOnCanvas(GraphicsContext gc) {
-        gc.save();
-        gc.translate(position.x(), position.y());
-        gc.rotate(Math.toDegrees(rotationAngle));
-        gc.drawImage(antImage, -antImage.getWidth() / 2, -antImage.getHeight() / 2);
-        gc.restore();
+    public void drawOnCanvas() {
     }
 
     public Vector2D getPosition() {

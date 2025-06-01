@@ -1,8 +1,6 @@
 package adamyan.Obstacles;
 
 import adamyan.Vector2D;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.paint.Color;
 
 import java.util.Optional;
 
@@ -25,10 +23,6 @@ public class LineObstacle extends Obstacle {
     }
 
     @Override
-    public void drawOnCanvas(Canvas canvas) {
-        var gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(3);
-        gc.strokeLine(startPos.x(), startPos.y(), endPos.x(), endPos.y());
+    public void drawOnCanvas() {
     }
 }

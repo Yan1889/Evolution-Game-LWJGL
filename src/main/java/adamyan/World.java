@@ -1,8 +1,6 @@
 package adamyan;
 
 import adamyan.Obstacles.Obstacle;
-import javafx.animation.AnimationTimer;
-import javafx.scene.canvas.Canvas;
 
 import java.util.List;
 
@@ -34,33 +32,9 @@ public class World {
         }
     }
 
-    /**
-     * Draws the colony
-     * @param canvas the canvas on which should be drawn
-     */
-    public void drawOnCanvas(Canvas canvas) {
-        var gc = canvas.getGraphicsContext2D();
-
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        // canvas outline
-        gc.strokeRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        for (Obstacle o : obstacles) {
-            o.drawOnCanvas(canvas);
-        }
-        for (AntPopulation p : antPopulations) {
-            p.drawOnCanvas(canvas);
-        }
+    public void drawOnCanvas() {
     }
 
-    public void startSimulation(Canvas canvas) {
-        // handle() gets called 60 times per second
-        new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                calculateFrame();
-                drawOnCanvas(canvas);
-            }
-        }.start();
+    public void startSimulation() {
     }
 }

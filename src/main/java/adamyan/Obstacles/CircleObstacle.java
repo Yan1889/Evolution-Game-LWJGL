@@ -1,7 +1,6 @@
 package adamyan.Obstacles;
 
 import adamyan.Vector2D;
-import javafx.scene.canvas.Canvas;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,12 +26,9 @@ public class CircleObstacle extends Obstacle {
     }
 
     @Override
-    public void drawOnCanvas(Canvas canvas) {
+    public void drawOnCanvas() {
         // Todo implement
     }
-
-
-
 
     public record VectorPair(Vector2D start, Vector2D end) {}
 }
