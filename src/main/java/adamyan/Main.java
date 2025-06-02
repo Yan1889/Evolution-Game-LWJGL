@@ -88,7 +88,7 @@ public class Main {
         setupOpenGL();
 
         // Load texture
-        imageTexture.loadTexture("ant.png");
+        imageTexture.loadTexture("src/main/resources/ant.png");
     }
 
     private void setupOpenGL() {
