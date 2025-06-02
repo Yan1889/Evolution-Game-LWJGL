@@ -20,7 +20,7 @@ public class CircleObstacle extends Obstacle {
     }
 
     @Override
-    public Optional<Vector2D> getIntersectionPoint() {
+    public Optional<Vector2D> getIntersectionPoint(Vector2D rayOrigin, Vector2D rayVector) {
         // Todo implement
         return Optional.empty();
     }
