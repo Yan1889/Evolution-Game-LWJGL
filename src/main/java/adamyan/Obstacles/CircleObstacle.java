@@ -1,7 +1,5 @@
 package adamyan.Obstacles;
 
-import adamyan.Vector2D;
-
 import java.util.List;
 import java.util.Optional;
 
