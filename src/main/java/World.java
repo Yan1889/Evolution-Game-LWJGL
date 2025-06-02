@@ -19,7 +19,7 @@ public class World {
     private final int windowWidth = 1200;
     private final int windowHeight = 800;
 
-    Ant ant = new Ant();
+    ImageTexture imageTexture = new ImageTexture();
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -28,7 +28,7 @@ public class World {
         loop();
 
         // Cleanup
-        glDeleteTextures(ant.textureId);
+        imageTexture.deleteTexture();
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -46,7 +46,7 @@ public class World {
         // Configure GLFW
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         // Create the window
         window = glfwCreateWindow(windowWidth, windowHeight, "Moving PNG Texture", NULL, NULL);
@@ -86,7 +86,7 @@ public class World {
         setupOpenGL();
 
         // Load texture
-        ant.loadTexture("ant.png"); // Replace with your PNG file path
+        imageTexture.loadTexture("ant.png");
     }
 
     private void setupOpenGL() {
@@ -111,14 +111,15 @@ public class World {
 
     private void loop() {
         while (!glfwWindowShouldClose(window)) {
-            // Update position
-            ant.updatePosition();
-
             // Clear the screen
             glClear(GL_COLOR_BUFFER_BIT);
 
             // Draw the texture
-            ant.drawTexture();
+            imageTexture.drawTexture(0, 0);
+            imageTexture.drawTexture(10, 10);
+            imageTexture.drawTexture(20, 20);
+            imageTexture.drawTexture(30, 30);
+            imageTexture.drawTexture(40, 40);
 
             // Swap buffers and poll events
             glfwSwapBuffers(window);
