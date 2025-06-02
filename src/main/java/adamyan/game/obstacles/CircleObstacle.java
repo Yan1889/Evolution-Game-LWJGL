@@ -1,10 +1,8 @@
 package adamyan.game.obstacles;
 
 import adamyan.game.Vector2D;
-import adamyan.game.VectorPair;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CircleObstacle extends Obstacle {
 
@@ -21,13 +19,15 @@ public class CircleObstacle extends Obstacle {
     }
 
     @Override
-    public Optional<Vector2D> getIntersectionPoint() {
+    public Optional<Vector2D> getIntersectionPoint(Vector2D rayOrigin, Vector2D rayVector) {
         // Todo implement
         return Optional.empty();
     }
 
     @Override
     public void drawOnCanvas() {
-        // ?
+        // Todo implement
     }
+
+    public record VectorPair(Vector2D start, Vector2D end) {}
 }
