@@ -1,5 +1,7 @@
 package adamyan.obstacles;
 
+import adamyan.game.Vector2D;
+
 import java.util.Optional;
 
 public class LineObstacle extends Obstacle {

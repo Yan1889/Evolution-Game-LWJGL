@@ -1,7 +1,8 @@
 package adamyan.obstacles;
 
-import java.util.List;
-import java.util.Optional;
+import adamyan.game.Vector2D;
+
+import java.util.*;
 
 public class CircleObstacle extends Obstacle {
 
