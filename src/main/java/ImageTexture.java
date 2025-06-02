@@ -7,22 +7,19 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryStack.*;
 
-public class Ant {
+public class ImageTexture {
 
     // Texture variables
     public int textureId;
     private int imageWidth;
     private int imageHeight;
 
-    // Position variables for animation
-    private float x = 100.0f;
-    private float y = 100.0f;
-    private float velocityX = 2.0f;
-    private float velocityY = 1.5f;
+    // Image size on screen
+    private final float imageDisplayScale = 1.0f;
 
     // Image size on screen
-    private final float imageDisplayWidth = 8.0f;
-    private final float imageDisplayHeight = 8.0f;
+    private float imageDisplayWidth = 0.0f;
+    private float imageDisplayHeight = 0.0f;
 
     public void loadTexture(String filepath) {
         try (MemoryStack stack = stackPush()) {
@@ -35,6 +32,9 @@ public class Ant {
 
             imageWidth = w.get();
             imageHeight = h.get();
+
+            imageDisplayWidth = imageWidth * imageDisplayScale;
+            imageDisplayHeight = imageHeight * imageDisplayScale;
 
             // Generate and bind texture
             textureId = glGenTextures();
@@ -56,25 +56,7 @@ public class Ant {
         }
     }
 
-    public void updatePosition() {
-        // Update position
-        x += velocityX;
-        y += velocityY;
-
-        // Bounce off edges
-        if (x <= 0 || x >= 1200 - imageDisplayWidth) {
-            velocityX = -velocityX;
-            x = Math.max(0, Math.min(x, 1200 - imageDisplayWidth));
-        }
-
-        if (y <= 0 || y >= 800 - imageDisplayHeight) {
-            velocityY = -velocityY;
-            y = Math.max(0, Math.min(y, 800 - imageDisplayHeight));
-        }
-    }
-
-
-    public void drawTexture() {
+    public void drawTexture(int x, int y) {
         // Bind the texture
         glBindTexture(GL_TEXTURE_2D, textureId);
 
@@ -85,15 +67,15 @@ public class Ant {
         glBegin(GL_QUADS);
         // Bottom-left
         glTexCoord2f(0.0f, 1.0f);
-        glVertex2f(x, y + imageDisplayHeight);
+        glVertex2f(x, imageDisplayHeight + y);
 
         // Bottom-right
         glTexCoord2f(1.0f, 1.0f);
-        glVertex2f(x + imageDisplayWidth, y + imageDisplayHeight);
+        glVertex2f(imageDisplayWidth + x, imageDisplayHeight + y);
 
         // Top-right
         glTexCoord2f(1.0f, 0.0f);
-        glVertex2f(x + imageDisplayWidth, y);
+        glVertex2f(imageDisplayWidth + x, y);
 
         // Top-left
         glTexCoord2f(0.0f, 0.0f);
@@ -101,5 +83,7 @@ public class Ant {
         glEnd();
     }
 
-
+    public void deleteTexture() {
+        glDeleteTextures(textureId);
+    }
 }
