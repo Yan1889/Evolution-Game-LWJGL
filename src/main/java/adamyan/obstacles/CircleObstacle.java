@@ -1,4 +1,4 @@
-package adamyan.Obstacles;
+package adamyan.obstacles;
 
 import java.util.List;
 import java.util.Optional;

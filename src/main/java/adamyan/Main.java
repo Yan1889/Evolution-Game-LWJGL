@@ -1,6 +1,5 @@
 package adamyan;
 
-import adamyan.game.World;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -19,105 +18,113 @@ public class Main {
     // The window handle
     private long window;
 
+    private final int windowWidth = 1200;
+    private final int windowHeight = 800;
+
+    ImageTexture imageTexture = new ImageTexture();
+
     public void run() {
-
-
-
-        // idk where to put my code
-        World testWorld = new World();
-        testWorld.startSimulation();
-
-
-
-
-
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
         init();
         loop();
 
-        // Free the window callbacks and destroy the window
+        // Cleanup
+        imageTexture.deleteTexture();
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
-
-        // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
     }
 
     private void init() {
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
+        // Setup an error callback
         GLFWErrorCallback.createPrint(System.err).set();
 
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( !glfwInit() )
+        // Initialize GLFW
+        if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 
         // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         // Create the window
-        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
-        if ( window == NULL )
+        window = glfwCreateWindow(windowWidth, windowHeight, "Moving PNG Texture", NULL, NULL);
+        if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        // Setup key callback
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+                glfwSetWindowShouldClose(window, true);
         });
 
-        // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
-            IntBuffer pWidth = stack.mallocInt(1); // int*
-            IntBuffer pHeight = stack.mallocInt(1); // int*
+        // Center the window
+        try (MemoryStack stack = stackPush()) {
+            IntBuffer pWidth = stack.mallocInt(1);
+            IntBuffer pHeight = stack.mallocInt(1);
 
-            // Get the window size passed to glfwCreateWindow
             glfwGetWindowSize(window, pWidth, pHeight);
-
-            // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-            // Center the window
             glfwSetWindowPos(
                     window,
                     (vidmode.width() - pWidth.get(0)) / 2,
                     (vidmode.height() - pHeight.get(0)) / 2
             );
-        } // the stack frame is popped automatically
+        }
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
-        // Enable v-sync
-        glfwSwapInterval(1);
-
-        // Make the window visible
+        glfwSwapInterval(1); // Enable v-sync
         glfwShowWindow(window);
+
+        // Initialize OpenGL
+        GL.createCapabilities();
+
+        // Setup 2D rendering
+        setupOpenGL();
+
+        // Load texture
+        imageTexture.loadTexture("ant.png");
+    }
+
+    private void setupOpenGL() {
+        // Enable 2D texturing
+        glEnable(GL_TEXTURE_2D);
+
+        // Enable blending for transparency
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Set up orthographic projection for 2D rendering
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, windowWidth, windowHeight, 0, -1, 1); // Origin at top-left
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        // Set clear color to light gray
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     private void loop() {
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GL.createCapabilities();
+        while (!glfwWindowShouldClose(window)) {
+            // Clear the screen
+            glClear(GL_COLOR_BUFFER_BIT);
 
-        // Set the clear color
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+            // Draw the texture
+            imageTexture.drawTexture(0, 0);
+            imageTexture.drawTexture(10, 10);
+            imageTexture.drawTexture(20, 20);
+            imageTexture.drawTexture(30, 30);
+            imageTexture.drawTexture(40, 40);
 
-        // Run the rendering loop until the user has attempted to close
-        // the window or has pressed the ESCAPE key.
-        while ( !glfwWindowShouldClose(window) ) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
-            glfwSwapBuffers(window); // swap the color buffers
-
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
+            // Swap buffers and poll events
+            glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }
@@ -125,5 +132,4 @@ public class Main {
     public static void main(String[] args) {
         new Main().run();
     }
-
 }
