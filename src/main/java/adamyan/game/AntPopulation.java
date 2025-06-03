@@ -1,5 +1,6 @@
 package adamyan.game;
 
+import adamyan.ImageTexture;
 import adamyan.neuralengine.ActivationFunctions;
 import adamyan.neuralengine.Layer;
 import adamyan.neuralengine.Network;
@@ -22,14 +23,14 @@ public class AntPopulation {
     private double rayLength;
     private double maxVelocity;
     private double lifeSpan;
+    ImageTexture antTexture = new ImageTexture();
 
     // ---- genetic stuff ----
     private double elitePercentage;
     private Function<Ant, Double> fitnessFunction;
 
 
-
-    public AntPopulation(Vector2D nestPos, int antCount, Function<Ant, Double> fitnessFunction, double elitePercentage) {
+    public AntPopulation(Vector2D nestPos, int antCount, Function<Ant, Double> fitnessFunction, double elitePercentage, String antImagePath) {
         this.nestPos = nestPos;
         this.antCount = antCount;
         this.fitnessFunction = fitnessFunction;
@@ -49,6 +50,8 @@ public class AntPopulation {
                     new Network(layers)
             ));
         }
+
+        antTexture.loadTexture(antImagePath);
     }
 
     public void calculateFrame() {
@@ -59,6 +62,10 @@ public class AntPopulation {
     public void flood() {}
 
     public void drawOnCanvas() {
-        // ?
+        antTexture.drawTexture(0, 0);
+    }
+
+    public void deleteTexture() {
+        antTexture.deleteTexture();
     }
 }

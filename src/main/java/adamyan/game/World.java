@@ -26,7 +26,8 @@ public class World {
                 new Vector2D(100, 100),
                 10,
                 ant -> ant.getPosition().x(),
-                0.10
+                0.10,
+                "src/main/resources/ant.png"
         ));
 
         obstacles = new ArrayList<>();

@@ -118,10 +118,6 @@ public class Main {
 
             // Draw the texture
             imageTexture.drawTexture(0, 0);
-            imageTexture.drawTexture(10, 10);
-            imageTexture.drawTexture(20, 20);
-            imageTexture.drawTexture(30, 30);
-            imageTexture.drawTexture(40, 40);
 
             // Swap buffers and poll events
             glfwSwapBuffers(window);
